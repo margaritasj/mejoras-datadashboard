@@ -1,0 +1,228 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+}
+
+img {
+  width: 100%;
+} 
+
+header {
+  background-color: #e1e1e1;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+}
+
+header .logo {
+  margin: auto;
+  width: 250px;
+}
+
+/*Estilo del usuario */
+section.user {
+  float: left;
+  width: 20%;
+  padding-top: 170px;
+  position: fixed;
+  border: 2px solid #ffc107;
+}
+
+div.user-name {
+  text-align: center;
+}
+
+section.user img {
+  width: 30%;
+  height: 30%;
+  margin-top: 30px;
+  border-radius: 10px;
+}
+
+div.name {
+  float: right;
+}
+section.user h3.name {
+  display: inline-block;
+  margin-left: 20px;
+}
+
+section.user h4 {
+  display: inline-block;
+}
+
+div.home {
+  border-bottom: 1px solid #ffc107; 
+  margin-top: 60px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+div.tables, div.calendar {
+  border-bottom: 1px solid #ffc107; 
+  padding: 20px 0px;
+  padding-bottom: 10px;
+}
+
+div.out {
+  padding: 20px 0px;
+}
+
+.home h4, .tables h4, .calendar h4, .out h4 {
+  display: inline-block;
+  margin-left: 30px;
+}
+
+section.user i {
+  margin-left: 30px;
+}
+
+div.home:hover, div.tables:hover, div.calendar:hover, div.out:hover {
+  background-color: #ffc107; 
+  color: #fff;
+}
+
+/* Contenido overview */
+.content-sede {
+  background-color: #f7f7f7;
+  margin-left: 20%;
+}
+
+.content-header {
+  background-color: #e1e1e1;
+  padding-left: 20px;
+  margin-left: 20%;
+}
+
+.selection {
+  background-color: transparent;
+  border: none;
+  font-size: 22px;
+  font-weight: bold;
+  margin: 20px 0;
+  outline: none;
+  text-transform: uppercase;
+}
+
+.container {
+  margin: auto;
+  max-width: 1200px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 210px;
+}
+
+.row {
+  margin: 0 -10px;
+  padding-top: 10px;
+}
+
+.container::after, .container::before, .row::before, .row::after {
+  display: table;
+  content: '';
+}
+
+.container::after, .row::after {
+  clear: both;
+}
+
+.col {
+  float: left;
+  padding: 0 10px;
+  width: 50%;
+  /* width: 50%; */
+}
+
+.content {
+  padding: 20px 0;
+}
+
+.box {
+  background-color: #fff;
+  min-height: 520px; 
+  margin-bottom: 20px;
+}
+#students-deserted {
+  color: red;
+}
+.cajita {
+  background-color: #e1e1e1;
+  float: left;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 23px;
+  height: 80px;
+  padding: 10px;
+  text-align: center;
+  width: 140px;
+  position: relative;
+}
+
+.description {
+  color: #939393;
+  font-size: 10px;
+  padding: 10px 0;
+  text-transform: uppercase;
+}
+
+.section {
+  background-color: #fff;
+  margin: 50px 0;
+  overflow: auto; 
+}
+
+h1 {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 15px 0 0 20px;
+  text-transform: uppercase;
+}
+h2 {
+  border-bottom: 2px solid #f7b617;
+  width: 200px;
+}
+
+.box-tabs {
+  font-weight: bold;
+  overflow: auto;
+  text-transform: uppercase;
+  position: fixed;
+  margin-left: 20%;
+  padding-top: 155px;
+  background-color: white;
+  width: 80%;
+  z-index: 50;
+}
+
+.tab {
+  float: left;
+  cursor: pointer;
+  margin-right: 20px;
+  height: 48px;
+  padding-top: 14px;
+  text-align: center;
+  width: 100px;
+}
+
+.tab.active {
+  border-bottom: 4px solid #f7b617;
+}
+
+.content {
+  display: none;
+}
+
+.content.active {
+  display: block;
+}
+
+/*--------*/
+.graphs{
+  width:100%;
+  display: inline-block
+}
