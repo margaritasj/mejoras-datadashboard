@@ -1,4 +1,5 @@
-window.addEventListener('load', function (event) {
+window.addEventListener('load', function () {
+
   var selection = document.getElementById('selection');
   // var contenidoSede = document.getElementById('contenido-sede');
 
@@ -19,17 +20,18 @@ window.addEventListener('load', function (event) {
   var approvedHse = document.getElementById('approved-hse');
   var averageHse = document.getElementById('average-hse');
 
-  var averageSatisfaction = document.getElementById('average-satisfied');
+  var averageSatisfied = document.getElementById('average-satisfied');
 
   var scoresTeacher = document.getElementById('scores-teacher');
 
   var scoresJedi = document.getElementById('scores-jedi');
+  var averageTotal = document.getElementById('average-total');
 
-  selection.addEventListener('change', showInformation);
+  selection.addEventListener('change', mostrarInfo);
 
-  function showInformation() {
+  function mostrarInfo() {
     //  console.log(e.target.value);
-    // Agarramos el valor del selector y almacenamos en la variable
+    // Agarramos el valor de selection y almacenamos en la variable
     var value = selection.value;
     // console.log(value);
 
@@ -47,28 +49,32 @@ window.addEventListener('load', function (event) {
     // Almacenamos toda la data en una variable  
     var generationData = data[sedeName][generation];
 
+    // Almacenamos el length de students en una variable
+    var totalStudentsN = generationData['students'].length;
+
     /* -------------Punto N°1 - El total de estudiantes presentes por sede y generación.------------*/
     // Almacenamos la cantidad del arreglo students en una variable 
     var totalStudents = generationData['students'];
-    var present = 0;
-    var counter = 0;
+    var activeStudents = 0;
+    var noActiveStudents = 0;
     for (var i = 0; i < totalStudents.length; i++) {
       if (totalStudents[i].active === true) {
-        present++;
-        console.log(counter);
+        activeStudents++;
+        console.log(activeStudents);
       } else {
-        counter++;
-        console.log(counter);
+        noActiveStudents++;
+        console.log(noActiveStudents);
       }
     }
 
     // Datos de estudiantes inscritas
+    var studentPresent = activeStudents;
     var div = document.createElement('div');
     var paragraph = document.createElement('p');
     paragraph.textContent = '# estudiantes inscritas';
     div.appendChild(paragraph);
     div.classList.add('description');
-    studentsInscribed.textContent = present;
+    studentsInscribed.textContent = studentPresent;
     studentsInscribed.appendChild(div);
 
     /* -----------------Punto N°2 - El porcentaje de deserción de estudiantes.----------------*/
@@ -84,18 +90,17 @@ window.addEventListener('load', function (event) {
     div.classList.add('description');
 
     // Datos de estudiantes que desartaron
-    var totalStudentsN = generationData['students'].length;
-    var deserted = counter;
-    console.log(deserted);
+    var studentDesert = noActiveStudents;
+    console.log(studentDesert);
     // Math.floor ---> Devuelve el máximo entero menor o igual a un número.
-    studentsDeserted.textContent = Math.floor((deserted * 100) / totalStudentsN) + '%';
+    studentsDeserted.textContent = Math.floor((studentDesert * 100) / totalStudentsN) + '%';
     studentsDeserted.appendChild(div);
 
     // Realizamos el gráfico  
     // Load Charts and the corechart package.
     google.charts.load('current', { 'packages': ['corechart'] });
 
-    // Draw the pie chart for Sarah's pizza when Charts is loaded.
+    // Draw the pie chart for Enrollment pizza when Charts is loaded.
     // google.charts.setOnLoadCallback(drawSarahChart);
 
     google.charts.setOnLoadCallback(drawChartEnrollment);
@@ -107,111 +112,117 @@ window.addEventListener('load', function (event) {
       data.addColumn('string', 'S');
       data.addColumn('number', 'N');
       data.addRows([
-        ['Present', present],
-        ['Deserted', deserted],
+        ['Present', studentPresent],
+        ['Deserted', studentDesert],
       ]);
-      
+
 
       // Set options for Enrollment pie chart.
-      var options = { 
+      var options = {
         title: 'Current Enrollment',
-        width: 400,
-        height: 300
+        width: 350,
+        height: 250,
+        colors: ['#ffc107', '#3a3835']
       };
-      // Instantiate and draw the chart for Sarah's pizza.
+      // Instantiate and draw the chart for Enrollment pizza.
       var chart1 = new google.visualization.PieChart(document.getElementById('graph-enrollment'));
       chart1.draw(data, options);
     }
 
     /* --Punto N°3 - N° de estudiantes que superan la meta en promedio en todos los sprints tanto HSE y en tech.--*/
     // Total de estudientes que pasan el 70%
-    var studentsCurrent = totalStudentsN - deserted;
-    console.log(studentsCurrent);
     var studentsTarget = 0;
     var totalStudentsTech = 0;
     var totalStudentsHse = 0;
     generationData.students.forEach(function(student) {
       // Sacamos la cantidad de sprints y lo almacenamos en una variable
-      var quantitySprints = student['sprints'].length;
-      // Almacenaremos el total de la suma de tech y hse
-      var total = 0;
-      var totalTech = 0;
-      var totalHse = 0;
+      var cantidadDeSprints = student.sprints.length;
+      if (student.active === true) {
+        var sumTech = 0;
+        var sumHse = 0;
+        student.sprints.forEach(function(sprint) {
+          sumTech += sprint.score.tech;
+          sumHse += sprint.score.hse;
+        });
 
-      student.sprints.forEach(function(sprint) {
-        total += (sprint.score.tech + sprint.score.hse);
-        // Obtenemos el puntaje de tech y lo almacenamos en una variable
-        var tech = sprint.score.tech;
-        totalTech += tech;
-        // Obtenemos el puntaje de hse
-        var hse = sprint.score.hse;
-        totalHse += hse;
-      });
+        var promedioTech = sumTech / cantidadDeSprints;
+        var promedioHse = sumHse / cantidadDeSprints;
 
-      // Al total le dividimos entre la cantidad de sprints y guardamos en un variable llamada promedio
-      var average = total / quantitySprints;
+        if ((promedioTech >= 1260) && (promedioHse >= 840)) {
+          studentsTarget++;
+        }
+        // TIP: total de puntajes tech es 1800 y su 70% es 1260
+        if (promedioTech >= 1260) {
+          totalStudentsTech++;
+        }
+        // TIP: total de puntajes hse es 1200 y su 70% es 840
+        if (promedioHse >= 840) {
+          totalStudentsHse++;
+        }
+      }
 
-      // TIP: total de puntos es 3000 (tech+hse) y su 70% es 2100
-      if (average >= 2100) {
-        studentsTarget++;
-      }
-      // TIP: total de puntajes tech es 1800 y su 70% es 1260
-      var averageTech = totalTech / quantitySprints;
-      if (averageTech >= 1260) {
-        totalStudentsTech++;
-      }
-      // TIP: total de puntajes hse es 1200 y su 70% es 840
-      var averageHse = totalHse / quantitySprints;
-      if (averageHse >= 840) {
-        totalStudentsHse++;
-      }
     });
-
     // Pasaron la meta total 
     var div = document.createElement('div');
-    var paragraph = document.createElement('p');
-    paragraph.textContent = '# estudiantes que superan la meta';
-    div.appendChild(paragraph);
+    var parrafo = document.createElement('p');
+    parrafo.textContent = '# estudiantes que superan la meta';
+    div.appendChild(parrafo);
     div.classList.add('description');
-    studentsApproved.textContent = studentsCurrent - studentsTarget;
+
+    studentsApproved.textContent = studentsTarget;
     studentsApproved.appendChild(div);
 
     /* ---Punto N°4 - El porcentaje que representa el dato anterior en relación al total de estudiantes.---*/
     // El porcentaje total 
     var div = document.createElement('div');
-    var paragraph = document.createElement('p');
-    paragraph.textContent = '% total';
-    div.appendChild(paragraph);
+    var parrafo = document.createElement('p');
+    parrafo.innerHTML = '% total' + '<br>' + activeStudents;
+    div.appendChild(parrafo);
     div.classList.add('description');
 
-    var percentageApproved = Math.floor((studentsTarget * 100) / studentsCurrent);
-    totalApproved.textContent = percentageApproved + '%';
+    var porcentajePasaron = Math.floor((studentsTarget * 100) / activeStudents);
+    totalApproved.textContent = porcentajePasaron + '%';
     totalApproved.appendChild(div);
 
-    /* ------ Punto N°5 - El Net Promoter Score (NPS) promedio de los sprints cursados. ------ */
-    // bajo la siguiente fórmula: [NPS] = [Promoters] - [Detractors]
+    // Realizamos el gráfico  
+    // Load Charts and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
 
-    var result = 0;
-    for (var i = 0; i < generationData.ratings.length; i++) {
-      var promoters = generationData.ratings[i].nps.promoters;
-      var detractors = generationData.ratings[i].nps.detractors;
-      var nps = promoters - detractors;
-      result += nps;
+    // Draw the pie chart for Enrollment pizza when Charts is loaded.
+    // google.charts.setOnLoadCallback(drawSarahChart);
+
+    google.charts.setOnLoadCallback(drawChartAchievement);
+
+    // Callback that draws the pie chart for Enrollment pizza.
+    function drawChartAchievement() {
+      // create the data table
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'S');
+      data.addColumn('number', 'N');
+      data.addRows([
+        ['Superaron', porcentajePasaron],
+        ['No superaron', studentsTarget],
+      ]);
+
+
+      // Set options for Enrollment pie chart.
+      var options = {
+        title: 'Current Achievement',
+        width: 350,
+        height: 250,
+        colors: ['#ffc107', '#3a3835']
+      };
+      // Instantiate and draw the chart for Enrollment pizza.
+      var chart2 = new google.visualization.PieChart(document.getElementById('graph-achievement'));
+      chart2.draw(data, options);
     }
-    var div = document.createElement('div');
-    var paragraph = document.createElement('p');
-    paragraph.textContent = '% de nps';
-    div.appendChild(paragraph);
-    div.classList.add('description');
-    averageNps.textContent = Math.floor(((result / generationData.ratings.length) * 100) / 100) + '%';
-    averageNps.appendChild(div);
 
     /* -- Punto N°6 - N° y % que representa el total de estudiantes que superan la meta tech.-- */
     // En N° la meta tech, puntos técnicos en promedio y por sprint
     var div = document.createElement('div');
-    var paragraph = document.createElement('p');
-    paragraph.textContent = '# estudiantes que pasan la meta tech';
-    div.appendChild(paragraph);
+    var parrafo = document.createElement('p');
+    parrafo.textContent = '# estudiantes que pasan la meta tech';
+    div.appendChild(parrafo);
     div.classList.add('description');
 
     approvedTech.textContent = totalStudentsTech;
@@ -219,9 +230,9 @@ window.addEventListener('load', function (event) {
 
     // En % la meta tech, puntos técnicos en promedio y por sprint
     var div = document.createElement('div');
-    var paragraph = document.createElement('p');
-    paragraph.textContent = '% estudiantes que superan la meta tech';
-    div.appendChild(paragraph);
+    var parrafo = document.createElement('p');
+    parrafo.textContent = '% estudiantes que superan la meta tech';
+    div.appendChild(parrafo);
     div.classList.add('description');
 
     averageTech.textContent = Math.floor((totalStudentsTech * 100) / totalStudentsN) + '%';
@@ -230,9 +241,9 @@ window.addEventListener('load', function (event) {
     /* -- Punto N°7 - N° y % que representa el total de estudiantes que superan la meta HSE.-- */
     // En N° la meta HSE, puntos técnicos en promedio y por sprint
     var div = document.createElement('div');
-    var paragraph = document.createElement('p');
-    paragraph.textContent = '# estudiantes que superan la meta hse';
-    div.appendChild(paragraph);
+    var parrafo = document.createElement('p');
+    parrafo.textContent = '# estudiantes que superan la meta hse';
+    div.appendChild(parrafo);
     div.classList.add('description');
 
     approvedHse.textContent = totalStudentsHse;
@@ -240,31 +251,95 @@ window.addEventListener('load', function (event) {
 
     // En % la meta HSE, puntos técnicos en promedio y por sprint
     var div = document.createElement('div');
-    var paragraph = document.createElement('p');
-    paragraph.textContent = '% estudiantes superan la meta hse';
-    div.appendChild(paragraph);
+    var parrafo = document.createElement('p');
+    parrafo.textContent = '% estudiantes superan la meta hse';
+    div.appendChild(parrafo);
     div.classList.add('description');
     averageHse.textContent = Math.floor((totalStudentsHse * 100) / totalStudentsN) + '%';
 
     averageHse.appendChild(div);
 
+    /* ------ Punto N°5 - El Net Promoter Score (NPS) promedio de los sprints cursados. ------ */
+    // bajo la siguiente fórmula: [NPS] = [Promoters] - [Detractors]
+    var rating = generationData['ratings'];
+    var promoters = [];
+    var passive = [];
+    var detractors = [];
+    var totalNps = [];
+    var acumulativeNps = 0;
+    var porcentajeAcumulativeNps;
+    var porcentajePromotors = 0;
+    var porcentajePassive = 0;
+    var porcentajeDetractors = 0;
+    var totalPromoters = 0;
+    var totalPassive = 0;
+    var totalDetractors = 0;
+
+    for (var i = 0; i < rating.length; i++) {
+      var nps = rating[i].nps.promoters - rating[i].nps.detractors;
+      totalNps.push(nps);
+
+      promoters.push(rating[i].nps.promoters);
+      passive.push(rating[i].nps.passive);
+      detractors.push(rating[i].nps.detractors);
+
+      totalPromoters = totalPromoters + promoters[i];
+      totalPassive = totalPassive + passive[i];
+      totalDetractors = totalDetractors + detractors[i];
+    }
+
+    porcentajePromotors = totalPromoters * 100 / (totalPromoters + totalDetractors + totalPassive);
+    porcentajeDetractors = totalDetractors * 100 / (totalPromoters + totalDetractors + totalPassive);
+    porcentajePassive = totalPassive * 100 / (totalPromoters + totalDetractors + totalPassive);
+
+    var promoters = (Math.round(porcentajePromotors) + '%' + '\t' + 'PROMOTER');
+    var detractors = (Math.round(porcentajeDetractors) + '%' + '\t' + 'DETRACTORS');
+    var passive = (Math.round(porcentajePassive) + '%' + '\t' + 'PASSIVE');
+
+    // var porcentajeIndividual = document.getElementById('porcentajeVarios');
+    averageTotal.innerHTML = promoters + '<br>' + passive + '<br>' + detractors;
+    console.log(totalNps.length);
+
+    for (var i = 0; i < totalNps.length; i++) {
+      acumulativeNps = acumulativeNps + totalNps[i];
+    }
+
+    porcentajeAcumulativeNps = acumulativeNps / totalNps.length;
+
+    var cumulativeNps = Math.round(porcentajeAcumulativeNps) + '%';
+
+    // var cumulativeNpsShow = document.getElementById('cumulativeNps');
+    average.innerHTML = cumulativeNps + '<br>' + '% CUMULATIVE NPS';
+
+    var div = document.createElement('div');
+    var parrafo = document.createElement('p');
+    parrafo.textContent = '% CUMULATIVE NPS';
+    div.appendChild(parrafo);
+    div.classList.add('description');
+
+    averageNps.innerHTML = cumulativeNps;
+    averageNps.appendChild(div);
+
+    averageTotal.innerHTML = promoters + '<br>' + passive + '<br>' + detractors;
+
     /* ----Punto N°8 - El porcentaje de estudiantes satisfechas con la experiencia de Laboratoria.----*/
     // El porcentaje de estudiantes satisfechas con la experiencia de Laboratoria.
     var totalStudent = 0;
     for (var i = 0; i < generationData.ratings.length; i++) {
-      var meet = generationData.ratings[i].student.cumple;
-      var beats = generationData.ratings[i].student.supera;
-      var totalSatisfaction = meet + beats;
-      totalStudent += totalSatisfaction;
+      var cumple = generationData.ratings[i].student.cumple;
+      var supera = generationData.ratings[i].student.supera;
+      var totalSatis = cumple + supera;
+      totalStudent += totalSatis;
     }
+
     var div = document.createElement('div');
-    var paragraph = document.createElement('p');
-    paragraph.textContent = '% estudiantes satisfechas';
-    div.appendChild(paragraph);
+    var parrafo = document.createElement('p');
+    parrafo.textContent = '% estudiantes satisfechas';
+    div.appendChild(parrafo);
     div.classList.add('description');
 
-    averageSatisfaction.textContent = Math.floor(((totalStudent / generationData.ratings.length) * 100) / 100) + '%';
-    averageSatisfaction.appendChild(div);
+    averageSatisfied.textContent = Math.floor(((totalStudent / generationData.ratings.length) * 100) / 100) + '%';
+    averageSatisfied.appendChild(div);
 
     /* ------ Punto N°9 - La puntuación promedio de l@s profesores. ------*/
     var totalRatingTeacher = 0;
@@ -274,9 +349,9 @@ window.addEventListener('load', function (event) {
     }
 
     var div = document.createElement('div');
-    var paragraph = document.createElement('p');
-    paragraph.textContent = 'puntuación a l@s profesores';
-    div.appendChild(paragraph);
+    var parrafo = document.createElement('p');
+    parrafo.textContent = 'puntuación a l@s profesores';
+    div.appendChild(parrafo);
     div.classList.add('description');
 
     scoresTeacher.textContent = (totalRatingTeacher / generationData.ratings.length).toFixed(2);
@@ -289,26 +364,26 @@ window.addEventListener('load', function (event) {
       totalRatingJedi += jedi;
     });
     var div = document.createElement('div');
-    var paragraph = document.createElement('p');
-    paragraph.textContent = 'puntuación a l@s jedi masters';
-    div.appendChild(paragraph);
+    var parrafo = document.createElement('p');
+    parrafo.textContent = 'puntuación a l@s jedi masters';
+    div.appendChild(parrafo);
     div.classList.add('description');
 
     scoresJedi.textContent = (totalRatingJedi / generationData.ratings.length).toFixed(2);
     scoresJedi.appendChild(div);
   };
-  /* -------------------------------------------------------------------------------------------- */
+
   for (var i = 0; i < tabs.length; i++) {
     // Agregar el evento click a todos los tabs
     tabs[i].addEventListener('click', function (event) {
-      for (var ii = 0; ii < tabs.length; ii++) {
+      for (var j = 0; j < tabs.length; j++) {
         // Quitar la clase active a todos los tabs
-        tabs[ii].classList.remove('active');
+        tabs[j].classList.remove('active');
       }
 
-      for (var jj = 0; jj < contents.length; jj++) {
+      for (var k = 0; k < contents.length; k++) {
         // Quitar la clase active a todos los contents
-        contents[jj].classList.remove('active');
+        contents[k].classList.remove('active');
       }
 
       // Agregar la clase active solo a este tab que se le dio click
@@ -318,7 +393,7 @@ window.addEventListener('load', function (event) {
     });
   }
 
-  showInformation();
+  mostrarInfo();
   tabs[0].classList.add('active');
   contents[0].classList.add('active');
 });

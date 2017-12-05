@@ -6,6 +6,13 @@
 
 body {
   font-family: 'Lato', sans-serif;
+  overflow: auto;
+}
+
+/*Estilo de header */
+figure.logo {
+  margin: 0 auto;
+  background-color: #fff;
 }
 
 img {
@@ -13,24 +20,54 @@ img {
 } 
 
 header {
-  background-color: #e1e1e1;
   position: fixed;
-  width: 100%;
-  z-index: 100;
 }
 
-header .logo {
-  margin: auto;
+div.container-logo{
+  width: 100%;
+  background-color: #fff;
+}
+
+header #logo {
+  margin: 0 auto;
   width: 250px;
+}
+
+/*Estilo de Select */
+
+.selection {
+  background-color: transparent;
+  border: none;
+  font-size: 22px;
+  font-weight: bold;
+  margin: 20px 30px;
+  outline: none;
+  text-transform: uppercase;
+}
+
+
+option {
+  color: rgb(167, 164, 164);
+  background: #fff;
+  font-size: 18px;
+  text-transform: capitalize;
+}
+
+select:optional {
+  background-color: #ffc107; 
+  color: #fff;
 }
 
 /*Estilo del usuario */
 section.user {
+  top: 90px;
+  position: fixed;
   float: left;
   width: 20%;
-  padding-top: 170px;
-  position: fixed;
-  border: 2px solid #ffc107;
+  /*outline: 1px solid red; */
+  /* font-family: sans-serif; */
+  /*border: 2px solid #ffc107; */
+  background-color: #f7b617;
 }
 
 div.user-name {
@@ -38,18 +75,29 @@ div.user-name {
 }
 
 section.user img {
-  width: 30%;
-  height: 30%;
+  border: 3px solid #fff;
+  width: 40%;
+  height: 40%;
   margin-top: 30px;
   border-radius: 10px;
 }
 
-div.name {
-  float: right;
+hr {
+  margin: auto;
+  margin-top: 10px;
+  height: 2px;
+  width: 70%;
+  background-color: #fff;
+  border: #fff;
+
 }
+section.user h4.task{
+  display: block;
+}
+
 section.user h3.name {
   display: inline-block;
-  margin-left: 20px;
+  margin-top: 10px;
 }
 
 section.user h4 {
@@ -57,14 +105,14 @@ section.user h4 {
 }
 
 div.home {
-  border-bottom: 1px solid #ffc107; 
-  margin-top: 60px;
+  border-bottom: 1px solid #fff; 
+  margin-top: 40px;
   padding-top: 20px;
   padding-bottom: 10px;
 }
 
 div.tables, div.calendar {
-  border-bottom: 1px solid #ffc107; 
+  border-bottom: 1px solid #fff; 
   padding: 20px 0px;
   padding-bottom: 10px;
 }
@@ -83,30 +131,25 @@ section.user i {
 }
 
 div.home:hover, div.tables:hover, div.calendar:hover, div.out:hover {
-  background-color: #ffc107; 
-  color: #fff;
+  /*background-color: #ffc107; 
+  color: #fff; */
+  background-color: #fff;
+  color: #f7b617;
 }
 
 /* Contenido overview */
 .content-sede {
+  padding-top: 200px;
   background-color: #f7f7f7;
   margin-left: 20%;
 }
 
 .content-header {
+  position: fixed;
   background-color: #e1e1e1;
-  padding-left: 20px;
+  float: right;
   margin-left: 20%;
-}
-
-.selection {
-  background-color: transparent;
-  border: none;
-  font-size: 22px;
-  font-weight: bold;
-  margin: 20px 0;
-  outline: none;
-  text-transform: uppercase;
+  width: 80%;
 }
 
 .container {
@@ -114,12 +157,10 @@ div.home:hover, div.tables:hover, div.calendar:hover, div.out:hover {
   max-width: 1200px;
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 210px;
 }
 
 .row {
   margin: 0 -10px;
-  padding-top: 10px;
 }
 
 .container::after, .container::before, .row::before, .row::after {
@@ -144,40 +185,57 @@ div.home:hover, div.tables:hover, div.calendar:hover, div.out:hover {
 
 .box {
   background-color: #fff;
-  min-height: 520px; 
   margin-bottom: 20px;
+  min-height: 460px;
 }
+
+
 #students-deserted {
   color: red;
 }
+
 .cajita {
   background-color: #e1e1e1;
   float: left;
   font-size: 20px;
   font-weight: bold;
   margin: 23px;
-  height: 80px;
+  margin-left: 40px;
+  height: 100px;
   padding: 10px;
   text-align: center;
-  width: 140px;
-  position: relative;
+  width: 180px;
 }
+
+.box:hover {
+  background-color: #ffc107;
+}
+
 
 .description {
   color: #939393;
-  font-size: 10px;
+  font-size: 15px;
+  /* margin-top: 20px; */
   padding: 10px 0;
   text-transform: uppercase;
 }
 
+
 .section {
+  display: inline-block;
   background-color: #fff;
   margin: 50px 0;
   overflow: auto; 
+  margin-right: 20px;
+  width: 48%;
+}
+
+.section:hover {
+  background-color: #f7b617;
 }
 
 h1 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   padding: 15px 0 0 20px;
   text-transform: uppercase;
@@ -188,21 +246,18 @@ h2 {
 }
 
 .box-tabs {
+  margin-left: 30px;
   font-weight: bold;
   overflow: auto;
   text-transform: uppercase;
-  position: fixed;
-  margin-left: 20%;
-  padding-top: 155px;
-  background-color: white;
-  width: 80%;
-  z-index: 50;
+  
 }
 
 .tab {
+  font-size: 22px;
   float: left;
   cursor: pointer;
-  margin-right: 20px;
+  margin-right: 50px;
   height: 48px;
   padding-top: 14px;
   text-align: center;
@@ -221,8 +276,10 @@ h2 {
   display: block;
 }
 
-/*--------*/
+/*-------------------------------------------------------*/
 .graphs{
   width:100%;
-  display: inline-block
+  display: inline-block;
+  margin-left: 80px;
+  position: relative;
 }
